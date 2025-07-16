@@ -1,0 +1,2231 @@
+screens Greener
+
+===============================================
+ARCHIVOS DE CÓDIGO CONCATENADOS
+Generado: 2025-07-15T23:48:23.807296
+Total de archivos: 10
+===============================================
+
+📋 ÍNDICE DE ARCHIVOS INCLUIDOS:
+-------------------------------------------------
+  2. ⚛️ ExploreScreen.tsx
+  3. ⚛️ FavoritesScreen.tsx
+  4. ⚛️ ForgotPasswordScreen.tsx
+  5. ⚛️ HomeScreen.tsx
+  6. ⚛️ LoginScreen.tsx
+  7. ⚛️ PlantsCategoryItemScreen.tsx
+  8. ⚛️ ProfileScreen.tsx
+  9. ⚛️ SignUpScreen.tsx
+ 10. ⚛️ WelcomeScreen.tsx
+
+==================================================
+
+
+
+======================================================================
+ARCHIVO 2: ExploreScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useState, useContext } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+} from 'react-native';
+import AppLoading from 'expo-app-loading';
+import { useSelector } from 'react-redux';
+
+// Components
+import AntDesignIcon from '../components/icons/AntDesignIcon';
+
+// UI
+import { width, height, colors } from '../constants/theme';
+import { ThemesContext } from '../context/ThemeContext';
+import EntypoIcon from '../components/icons/EntypoIcon';
+
+const ExploreScreen = ({ navigation }) => {
+  const { name, description, tags, images } = useSelector((state) => ({
+    name: state?.BestPlants.name,
+    description: state?.BestPlants.description,
+    tags: state?.BestPlants.tags,
+    images: state?.BestPlants.images,
+  }));
+
+  const [indexIndicator, setIndexIndicator] = useState(2);
+  const [image, setImage] = useState(require('../assets/images/plants_1.png'));
+  const [displayStatus, setDisplayStatus] = useState(true);
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  return (
+    <View style={[styles.container]}>
+      <View style={[styles.header]}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <AntDesignIcon name="arrowleft" size={24} color="#C5CCD6" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <EntypoIcon name="dots-three-horizontal" size={22} color="#C5CCD6" />
+        </TouchableOpacity>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={[styles.imageStyleHeader]}>
+          <Image source={image} style={[styles.headerImage]} />
+        </View>
+        <View style={[styles.payloadContent]}>
+          <View style={[styles.titleCategory]}>
+            <Text style={[styles.titleText]}>{name}</Text>
+          </View>
+          <View style={[styles.listCategory]}>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              data={tags}
+              bounces={false}
+              keyExtractor={(_, index) => {
+                return index + Math.random().toString();
+              }}
+              renderItem={({ item }) => {
+                return (
+                  <View style={[styles.categoryNameItem]}>
+                    <Text style={[styles.categoryNameText]}>{item.name}</Text>
+                  </View>
+                );
+              }}
+            />
+          </View>
+          <View>
+            <Text style={[styles.descriptionText]}>{description}</Text>
+          </View>
+          <View style={[styles.grayInderline]}></View>
+          <View style={[styles.galleryBlock]}>
+            <Text style={[styles.galleryBlockTitle]}>Gallery</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <FlatList
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                data={images.slice(0, indexIndicator)}
+                bounces={false}
+                keyExtractor={(_, index) => {
+                  return index + Math.random().toString();
+                }}
+                renderItem={({ item }) => {
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setImage(item);
+                      }}
+                    >
+                      <View style={[styles.categoryNameImage]}>
+                        <Image source={item} style={[styles.imageSlider]} />
+                      </View>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  setIndexIndicator(images.length);
+                  setDisplayStatus(false);
+                }}
+                style={{ display: displayStatus ? 'flex' : 'none' }}
+              >
+                <View style={[styles.grayBlock]}>
+                  <Text>+{images.length - 2}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingTop: height * 0.07,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.085,
+  },
+  headerImage: {
+    width: '100%',
+    height: 350,
+    resizeMode: 'contain',
+  },
+  imageStyleHeader: {
+    marginTop: 10,
+    marginBottom: 25,
+  },
+  payloadContent: {
+    paddingHorizontal: width * 0.085,
+  },
+  titleCategory: {
+    marginBottom: 15,
+  },
+  titleText: {
+    color: colors.black,
+    fontSize: 20,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  listCategory: {
+    marginBottom: 20,
+  },
+  categoryNameItem: {
+    marginRight: 15,
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: colors.gray2,
+  },
+  categoryNameText: {
+    color: colors.gray,
+    fontFamily: 'SFUIDisplay-Regular',
+    paddingVertical: 6,
+    paddingHorizontal: 19,
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: colors.gray,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  grayInderline: {
+    marginTop: 20,
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.gray2,
+  },
+  galleryBlock: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  galleryBlockTitle: {
+    color: colors.black,
+    fontSize: 18,
+    fontFamily: 'SFUIDisplay-Medium',
+    marginBottom: 10,
+  },
+  grayBlock: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 65,
+    height: 65,
+    backgroundColor: colors.gray2,
+    opacity: 0.3,
+  },
+  imageSlider: {
+    width: 115,
+    height: 115,
+    resizeMode: 'cover',
+  },
+  categoryNameImage: {
+    marginRight: 20,
+  },
+});
+
+export default ExploreScreen;
+
+
+// END OF FILE: ExploreScreen.tsx
+
+
+======================================================================
+ARCHIVO 3: FavoritesScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useState, useContext } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from 'react-native';
+import AppLoading from 'expo-app-loading';
+
+// Components
+import AntDesignIcon from '../components/icons/AntDesignIcon';
+
+// UI
+import { ThemesContext } from '../context/ThemeContext';
+import { width, height, colors } from '../constants/theme';
+
+const FavoritesScreen = ({ navigation }) => {
+  const [inputValue, setInputValue] = useState('');
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  return (
+    <View style={[styles.container]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={[styles.header]}>
+          <Text style={[styles.sectionTitle]}>Explore</Text>
+          <View style={[styles.textInputBlock]}>
+            <TextInput
+              placeholder="Search"
+              style={[styles.textInput]}
+              value={inputValue}
+              onChangeText={(text) => {
+                setInputValue(text);
+              }}
+            />
+            <TouchableOpacity>
+              <AntDesignIcon name="search1" size={20} color="#C5CCD6" />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('BottomTabNavigator', { screen: 'Explore' });
+          }}
+        >
+          <Image
+            source={require('../assets/images/explore_1.png')}
+            style={{ width: '100%', borderRadius: 10 }}
+          />
+        </TouchableOpacity>
+        <View style={[styles.rowStyle]}>
+          <Image
+            source={require('../assets/images/explore_2.png')}
+            style={{ width: '66%', borderRadius: 10 }}
+          />
+
+          <Image
+            source={require('../assets/images/explore_3.png')}
+            style={{ width: '30%', borderRadius: 10 }}
+          />
+        </View>
+        <View style={[styles.rowStyle]}>
+          <Image
+            source={require('../assets/images/explore_4.png')}
+            style={{ width: '48%', borderRadius: 10 }}
+          />
+
+          <Image
+            source={require('../assets/images/explore_5.png')}
+            style={{ width: '48%', borderRadius: 10 }}
+          />
+        </View>
+        <View style={[styles.bottomImage]}>
+          <Image
+            source={require('../assets/images/explore_6.png')}
+            style={{ width: '100%', borderRadius: 10 }}
+          />
+        </View>
+      </ScrollView>
+      <TouchableOpacity>
+        <View style={[styles.centerModeFilter]}>
+          <LinearGradient
+            start={{ x: 0, y: 15 }}
+            end={{ x: 1.33, y: 5 }}
+            colors={[colors.primary, colors.secondary, colors.tertiary]}
+            style={[styles.centerModeFilter]}
+          >
+            <Text style={styles.filtersText}>Filters</Text>
+          </LinearGradient>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingTop: height * 0.06,
+    paddingHorizontal: width * 0.085,
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  sectionTitle: {
+    fontSize: 26,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  header: {
+    marginBottom: 30,
+    marginTop: 35,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textInputBlock: {
+    position: 'relative',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: 140,
+    height: 32,
+    backgroundColor: 'rgba(142, 142, 147, 0.06)',
+    borderRadius: 10,
+  },
+  textInput: {
+    width: 100,
+    paddingLeft: 12,
+    paddingVertical: 8,
+    marginRight: 9,
+  },
+  rowStyle: {
+    marginTop: 25,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  bottomImage: {
+    marginTop: 25,
+  },
+  filtersText: {
+    paddingVertical: 11,
+    paddingHorizontal: 50,
+    color: colors.white,
+    fontFamily: 'SFUIDisplay-Regular',
+    fontSize: 16,
+  },
+  centerMode: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centerModeFilter: {
+    position: 'absolute',
+    bottom: height * 0.04,
+    right: width * 0.12,
+    zIndex: 400,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+export default FavoritesScreen;
+
+
+// END OF FILE: FavoritesScreen.tsx
+
+
+======================================================================
+ARCHIVO 4: ForgotPasswordScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useState, useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import AppLoading from 'expo-app-loading';
+import { LinearGradient } from 'expo-linear-gradient';
+
+// Components
+import AntDesignIcon from '../components/icons/AntDesignIcon';
+import { auth } from '../auth/firebase-config';
+
+// UI
+import { width, height, colors } from '../constants/theme';
+import { ThemesContext } from '../context/ThemeContext';
+
+const ForgotPasswordScreen = ({ navigation }) => {
+  const [error, setError] = useState(false);
+  const [email, setEmail] = useState('');
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  const handleReset = (email: string) => {
+    auth
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        alert('Password reset email sent!');
+        navigation.navigate('Login');
+      })
+      .catch((error: { code: string; message: string }) => {
+        setError(true);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert('error code:' + errorCode + '.' + 'error message:' + errorMessage + '.');
+      });
+  };
+
+  return (
+    <View style={[styles.container]}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
+        <AntDesignIcon name="arrowleft" size={24} color="#C5CCD6" />
+      </TouchableOpacity>
+
+      <Text style={[styles.recoveryText]}>Password recovery</Text>
+      <View style={[styles.authorizationPlace]}>
+        <View>
+          <Text
+            style={[
+              styles.authorizationText,
+              {
+                color: error ? colors.accent : colors.black,
+              },
+            ]}
+          >
+            Email
+          </Text>
+          <TextInput
+            style={[styles.textInput]}
+            placeholder="simpleEmail@mail.ru"
+            value={email}
+            onChangeText={(inputText) => {
+              setEmail(inputText);
+              setError(false);
+            }}
+          />
+          <View
+            style={[
+              styles.inputInderline,
+              {
+                backgroundColor: error ? colors.accent : colors.gray2,
+              },
+            ]}
+          ></View>
+        </View>
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          handleReset(email);
+        }}
+      >
+        <View style={[styles.buttonCenterMode]}>
+          <LinearGradient
+            start={{ x: 0, y: 15 }}
+            end={{ x: 1.33, y: 5 }}
+            colors={[colors.primary, colors.secondary, colors.tertiary]}
+            style={[styles.buttonLogin, styles.blockCentering]}
+          >
+            <Text style={styles.loginButtonText}>Get password</Text>
+          </LinearGradient>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Login');
+        }}
+      >
+        <View style={[styles.blockCentering]}>
+          <Text style={[styles.forgotPasswordText]}>Go back to login</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingHorizontal: width * 0.085,
+    paddingTop: height * 0.1,
+  },
+  blockCentering: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  recoveryText: {
+    marginTop: 35,
+    fontSize: 26,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  authorizationPlace: {
+    marginTop: 135,
+  },
+  authorizationText: {
+    fontSize: 15,
+    marginBottom: 10,
+    fontFamily: 'SFUIDisplay-Regular',
+  },
+  inputInderline: {
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.gray2,
+    marginBottom: 20,
+  },
+  textInput: {
+    color: colors.black,
+    marginBottom: 20,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  buttonCenterMode: {
+    marginTop: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonLogin: {
+    width: '100%',
+    height: 48,
+    borderRadius: 9,
+  },
+  loginButtonText: {
+    color: colors.white,
+    fontFamily: 'SFUIDisplay-Regular',
+    fontSize: 16,
+  },
+  forgotPasswordText: {
+    color: colors.gray,
+    marginTop: 20,
+    textDecorationLine: 'underline',
+  },
+  passwordInput: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+});
+
+export default ForgotPasswordScreen;
+
+
+// END OF FILE: ForgotPasswordScreen.tsx
+
+
+======================================================================
+ARCHIVO 5: HomeScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useContext } from 'react';
+import { StyleSheet, View, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import AppLoading from 'expo-app-loading';
+
+//Components
+import Slider from '../components/home/Slider';
+import Categories from '../components/home/Categories';
+import BestPlants from '../components/home/BestPlants';
+import SearchForm from '../components/home/SearchForm';
+import Notification from '../components/home/Notification';
+
+// UI
+import { width, colors } from '../constants/theme';
+import { ThemesContext } from '../context/ThemeContext';
+
+const HomeScreen = ({ navigation }) => {
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  return (
+    <ScrollView style={[styles.container]}>
+      <SafeAreaView>
+        <View style={[styles.header]}>
+          <SearchForm />
+          <Notification />
+        </View>
+        <Slider />
+        <Categories />
+        <BestPlants navigation={navigation} />
+      </SafeAreaView>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    paddingTop: StatusBar.currentHeight,
+  },
+  header: {
+    marginTop: 20,
+    paddingHorizontal: width * 0.08,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+});
+
+export default HomeScreen;
+
+
+// END OF FILE: HomeScreen.tsx
+
+
+======================================================================
+ARCHIVO 6: LoginScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useState, useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import AppLoading from 'expo-app-loading';
+import { LinearGradient } from 'expo-linear-gradient';
+
+// Components
+import AntDesignIcon from '../components/icons/AntDesignIcon';
+import { auth } from '../auth/firebase-config';
+
+// UI
+import { width, height, colors } from '../constants/theme';
+import { ThemesContext } from '../context/ThemeContext';
+
+const LoginScreen = ({ navigation }) => {
+  const [error, setError] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(true);
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  const handleLogin = (email: string, password: string) => {
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredentials: { user: any }) => {
+        const user = userCredentials.user;
+        console.log('Logged in with:', user.email);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'BottomTabNavigator', screen: 'Browse' }],
+        });
+      })
+      .catch((error: { message: string }) => {
+        setError(true);
+        setPassword('');
+        alert(error.message);
+      });
+  };
+
+  return (
+    <View style={[styles.container]}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
+        <AntDesignIcon name="arrowleft" size={24} color="#C5CCD6" />
+      </TouchableOpacity>
+      <Text style={[styles.loginText]}>Login</Text>
+      <View style={[styles.authorizationPlace]}>
+        <View>
+          <Text
+            style={[
+              styles.authorizationText,
+              {
+                color: error ? colors.accent : colors.black,
+              },
+            ]}
+          >
+            Email
+          </Text>
+          <TextInput
+            style={[styles.textInput]}
+            placeholder="simpleEmail@mail.ru"
+            value={email}
+            onChangeText={(inputText) => {
+              setEmail(inputText);
+              setError(false);
+            }}
+          />
+          <View
+            style={[
+              styles.inputInderline,
+              {
+                backgroundColor: error ? colors.accent : colors.gray2,
+              },
+            ]}
+          ></View>
+        </View>
+        <View>
+          <Text
+            style={[
+              styles.authorizationText,
+              {
+                color: error ? colors.accent : colors.black,
+              },
+            ]}
+          >
+            Password
+          </Text>
+          <View style={[styles.passwordInput]}>
+            <TextInput
+              keyboardType="email-address"
+              style={[styles.textInput]}
+              value={
+                passwordVisible
+                  ? password
+                  : [...Array(password.length)].reduce((acc) => {
+                      return (acc += '*');
+                    }, '')
+              }
+              onChangeText={(inputText) => {
+                passwordVisible ? setPassword(inputText) : null;
+                setError(false);
+              }}
+              placeholder="yourCoolPassword"
+            />
+            <Entypo
+              name={passwordVisible ? 'eye' : 'eye-with-line'}
+              size={20}
+              color="#6E737A"
+              onPress={() => {
+                setPasswordVisible(!passwordVisible);
+              }}
+            />
+          </View>
+          <View
+            style={[
+              styles.inputInderline,
+              {
+                backgroundColor: error ? colors.accent : colors.gray2,
+              },
+            ]}
+          ></View>
+        </View>
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          handleLogin(email, password);
+        }}
+      >
+        <View style={[styles.buttonCenterMode]}>
+          <LinearGradient
+            start={{ x: 0, y: 15 }}
+            end={{ x: 1.33, y: 5 }}
+            colors={[colors.primary, colors.secondary, colors.tertiary]}
+            style={[styles.buttonLogin, styles.blockCentering]}
+          >
+            <Text style={styles.loginButtonText}>Login</Text>
+          </LinearGradient>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('ForgotPassword');
+        }}
+      >
+        <View style={[styles.blockCentering]}>
+          <Text style={[styles.forgotPasswordText]}>Forgot your password?</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingHorizontal: width * 0.085,
+    paddingTop: height * 0.1,
+  },
+  blockCentering: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginText: {
+    marginTop: 35,
+    fontSize: 26,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  authorizationPlace: {
+    marginTop: 50,
+  },
+  authorizationText: {
+    fontSize: 15,
+    marginBottom: 10,
+    fontFamily: 'SFUIDisplay-Regular',
+  },
+  inputInderline: {
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.gray2,
+    marginBottom: 20,
+  },
+  textInput: {
+    color: colors.black,
+    marginBottom: 20,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  buttonCenterMode: {
+    marginTop: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonLogin: {
+    width: '100%',
+    height: 48,
+    borderRadius: 9,
+  },
+  loginButtonText: {
+    color: colors.white,
+    fontFamily: 'SFUIDisplay-Regular',
+    fontSize: 16,
+  },
+  forgotPasswordText: {
+    color: colors.gray,
+    marginTop: 20,
+    textDecorationLine: 'underline',
+  },
+  passwordInput: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+});
+
+export default LoginScreen;
+
+
+// END OF FILE: LoginScreen.tsx
+
+
+======================================================================
+ARCHIVO 7: PlantsCategoryItemScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useContext } from 'react';
+import { StyleSheet, View, ScrollView } from 'react-native';
+import AppLoading from 'expo-app-loading';
+
+// Components
+import NavigationGoBack from '../components/NavigationGoBack';
+import DropDown from '../components/DropDown';
+import GrayLine from '../components/GrayLine';
+
+// UI
+import { width, height, colors } from '../constants/theme';
+import { ThemesContext } from '../context/ThemeContext';
+import CategoryItemCharacteristic from '../components/home/CategoryItemCharacteristic';
+
+const PlantsCategoryItemScreen = ({ navigation, route }) => {
+  const { item } = route.params;
+
+  const title = item?.title;
+  const lowPrice = item.price?.lowPrice;
+  const hightPrice = item.price?.highPrice;
+  const dimensions = item.payload?.size;
+  const planters = item.payload?.planter;
+  const planterColors = item.payload?.planterColor;
+  const description = item.payload?.description;
+  const sliderPhotos = item.payload?.sliderPhotos;
+  const careGuide = item.payload?.careGuide;
+  const sadPlantSigns = item.payload?.sadPlantSigns;
+  const guarantee = item.payload?.guarantee?.description;
+
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={[styles.container]}>
+        <View style={[styles.header]}>
+          <View style={[styles.backIconWrapper]}>
+            <NavigationGoBack navigation={navigation} />
+          </View>
+        </View>
+        <View>
+          <CategoryItemCharacteristic
+            item={item}
+            title={title}
+            lowPrice={lowPrice}
+            dimensions={dimensions}
+            planters={planters}
+            planterColors={planterColors}
+            sliderPhotos={sliderPhotos}
+          />
+          <View style={[styles.dropDownContainer]}>
+            <GrayLine />
+            <DropDown information={description} title={'Description'} />
+            <GrayLine />
+            <DropDown information={careGuide} title={'Care Guide'} />
+            <GrayLine />
+            <DropDown information={sadPlantSigns} title={'Sad Plant Signs'} />
+            <GrayLine />
+            <DropDown information={guarantee} title={'30-Day Guarantee'} />
+            <GrayLine />
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    paddingTop: height * 0.07,
+  },
+  header: {
+    paddingHorizontal: width * 0.08,
+  },
+  backIconWrapper: {
+    marginBottom: 15,
+  },
+  dropDownContainer: {
+    paddingHorizontal: width * 0.08,
+  },
+});
+
+export default PlantsCategoryItemScreen;
+
+
+// END OF FILE: PlantsCategoryItemScreen.tsx
+
+
+======================================================================
+ARCHIVO 8: ProfileScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useState, useContext } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Switch,
+  Slider,
+} from 'react-native';
+import { useSelector } from 'react-redux';
+import AppLoading from 'expo-app-loading';
+
+// Components
+import EntypoIcon from '../components/icons/EntypoIcon';
+import AntDesignIcon from '../components/icons/AntDesignIcon';
+
+// UI
+import { width, height, colors } from '../constants/theme';
+import { ThemesContext } from '../context/ThemeContext';
+
+const ProfileScreen = ({ navigation }) => {
+  const {
+    userName,
+    userLastName,
+    location,
+    email,
+    avatar,
+    budget,
+    monthlyCap,
+    notifications,
+    newsletter,
+  } = useSelector((state: any) => ({
+    userName: state?.User?.userName,
+    userLastName: state?.User?.userLastName,
+    location: state?.User?.location,
+    email: state?.User?.email,
+    avatar: state?.User?.avatar,
+    budget: state?.User?.budget,
+    monthlyCap: state?.User?.monthlyCap,
+    notifications: state?.User?.notifications,
+    newsletter: state?.User?.newsletter,
+  }));
+
+  const [userNameStatus, setUserNameStatus] = useState(false);
+  const [locationStatus, setLocationStatus] = useState(false);
+
+  const [montclyCap, setMontlyCap] = useState(monthlyCap);
+  const [budgetUpdated, setBudgetUpdated] = useState(budget);
+  const [locationUpdated, setLocationUpdated] = useState(location);
+  const [userNameUpdated, setUserNameUpdtated] = useState(userName);
+  const [isEnabledNewsLetter, setIsEnabledNewsLetter] = useState(newsletter);
+  const [isEnabledNotification, setIsEnabledNotification] = useState(notifications);
+
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  const toggleSwitch =
+    (fn: {
+      (value: React.SetStateAction<boolean>): void;
+      (value: React.SetStateAction<boolean>): void;
+      (arg0: (previousState: any) => boolean): any;
+    }) =>
+    () =>
+      fn((previousState) => !previousState);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  return (
+    <View style={[styles.container]}>
+      <View style={[styles.headerIcons]}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <AntDesignIcon name="arrowleft" size={24} color="#C5CCD6" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <EntypoIcon name="dots-three-horizontal" size={22} color="#C5CCD6" />
+        </TouchableOpacity>
+      </View>
+      <View style={[styles.titlePhoto]}>
+        <Text style={[styles.title]}>Settings</Text>
+        <Image source={avatar} style={[styles.avatarImage]} />
+      </View>
+      <View style={[styles.settings]}>
+        <View style={[styles.userInput]}>
+          <Text style={[styles.userName]}>Username</Text>
+          <View style={[styles.textInputEdit]}>
+            <TextInput
+              editable={userNameStatus}
+              value={userNameUpdated}
+              style={[styles.inputTextStyle]}
+              onChangeText={(textInput) => {
+                setUserNameUpdtated(textInput);
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                setUserNameStatus(!userNameStatus);
+              }}
+            >
+              <Text style={[styles.editTextStyle]}>{userNameStatus ? 'Save' : 'Edit'}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={[styles.userInput]}>
+          <Text style={[styles.userName]}>Location</Text>
+          <View style={[styles.textInputEdit]}>
+            <TextInput
+              editable={locationStatus}
+              value={locationUpdated}
+              style={[styles.inputTextStyle]}
+              onChangeText={(textInput) => {
+                setLocationUpdated(textInput);
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                setLocationStatus(!locationStatus);
+              }}
+            >
+              <Text style={[styles.editTextStyle]}>{locationStatus ? 'Save' : 'Edit'}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={[styles.userInput]}>
+          <Text style={[styles.userName]}>E-mail</Text>
+          <View style={[styles.textInputEdit]}>
+            <Text style={[styles.inputTextStyle, { marginBottom: 10 }]}>{email}</Text>
+          </View>
+        </View>
+        <View style={[styles.grayLine]}></View>
+        <Text style={[styles.userName]}>Budget</Text>
+        <Slider
+          value={budgetUpdated}
+          minimumValue={0}
+          maximumValue={999}
+          minimumTrackTintColor="rgba(10, 196, 186, 1)"
+          onValueChange={(value) => {
+            setBudgetUpdated(parseInt(value.toLocaleString(), 10));
+          }}
+        />
+        <View style={[styles.sliderBlock]}>
+          <Text style={[styles.styleSliderText]}>${budgetUpdated}</Text>
+        </View>
+        <Text style={[styles.userName, { marginTop: 15 }]}>Monthly Cap</Text>
+        <Slider
+          value={montclyCap}
+          minimumValue={0}
+          maximumValue={999}
+          minimumTrackTintColor="rgba(10, 196, 186, 1)"
+          onValueChange={(value) => {
+            setMontlyCap(parseInt(value.toLocaleString(), 10));
+          }}
+        />
+        <View style={[styles.sliderBlock]}>
+          <Text style={[styles.styleSliderText]}>${montclyCap}</Text>
+        </View>
+      </View>
+      <View style={[styles.grayLine]}></View>
+      <View>
+        <View style={[styles.switchBlock]}>
+          <Text style={[styles.userName]}>Notifications</Text>
+          <Switch
+            thumbColor={colors.white}
+            trackColor={{ false: colors.gray2, true: colors.primary }}
+            onValueChange={toggleSwitch(setIsEnabledNotification)}
+            value={isEnabledNotification}
+          />
+        </View>
+        <View style={[styles.switchBlock]}>
+          <Text style={[styles.userName]}>Newsletter</Text>
+          <Switch
+            thumbColor={colors.white}
+            trackColor={{ false: colors.gray2, true: colors.primary }}
+            onValueChange={toggleSwitch(setIsEnabledNewsLetter)}
+            value={isEnabledNewsLetter}
+          />
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingHorizontal: width * 0.085,
+    paddingTop: height * 0.067,
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontFamily: 'SFUIDisplay-Medium',
+    fontSize: 28,
+    color: 'rgba(50, 54, 67, 1)',
+  },
+  titlePhoto: {
+    marginTop: 35,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  avatarImage: {
+    width: 43,
+    height: 43,
+    borderRadius: 36,
+  },
+  settings: {
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  userName: {
+    fontFamily: 'SFUIDisplay-Regular',
+    color: colors.gray,
+    fontSize: 16,
+    marginBottom: 14,
+  },
+  editTextStyle: {
+    color: colors.primary,
+    fontSize: 18,
+  },
+  textInputEdit: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  inputTextStyle: {
+    fontSize: 15,
+    color: colors.black,
+  },
+  userInput: {
+    marginBottom: 20,
+  },
+  grayLine: {
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.gray2,
+    marginBottom: 20,
+  },
+  switchBlock: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sliderBlock: {},
+  styleSliderText: {
+    color: colors.gray,
+  },
+});
+
+export default ProfileScreen;
+
+
+// END OF FILE: ProfileScreen.tsx
+
+
+======================================================================
+ARCHIVO 9: SignUpScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useState, useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import AppLoading from 'expo-app-loading';
+import { LinearGradient } from 'expo-linear-gradient';
+
+// Components
+import AntDesignIcon from '../components/icons/AntDesignIcon';
+import { auth } from '../auth/firebase-config';
+
+// UI
+import { width, height, colors } from '../constants/theme';
+import { ThemesContext } from '../context/ThemeContext';
+
+const SignUpScreen = ({ navigation }) => {
+  const [name, setName] = useState('');
+  const [errorName, setErrorName] = useState(false);
+  const [errorLastName, setErrorLastName] = useState(false);
+  const [lastName, setLastName] = useState('');
+  const [error, setError] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(true);
+
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  const handleSignUp = (email: string, password: string) => {
+    if (name === '') {
+      setErrorName(true);
+      return;
+    }
+    if (lastName === '') {
+      setErrorLastName(true);
+      return;
+    }
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredentials: { user: any }) => {
+        const user = userCredentials.user;
+        console.log('Logged in with:', user.email);
+        navigation.navigate('Login');
+      })
+      .catch((error: { message: string }) => {
+        setError(true);
+        alert(error.message);
+      });
+  };
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  return (
+    <View style={[styles.container]}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
+        <AntDesignIcon name="arrowleft" size={24} color="#C5CCD6" />
+      </TouchableOpacity>
+      <Text style={[styles.loginText]}>Sign Up</Text>
+      <View style={[styles.authorizationPlace]}>
+        <View>
+          <Text
+            style={[
+              styles.authorizationText,
+              {
+                color: errorName ? colors.accent : colors.black,
+              },
+            ]}
+          >
+            First name
+          </Text>
+          <TextInput
+            style={[styles.textInput]}
+            placeholder="Name"
+            onChangeText={(inputText) => {
+              setErrorName(false);
+              setName(inputText);
+            }}
+          />
+          <View
+            style={[
+              styles.inputInderline,
+              {
+                backgroundColor: errorName ? colors.accent : colors.gray2,
+              },
+            ]}
+          ></View>
+        </View>
+        <View>
+          <Text
+            style={[
+              styles.authorizationText,
+              {
+                color: errorLastName ? colors.accent : colors.black,
+              },
+            ]}
+          >
+            Last Name
+          </Text>
+          <TextInput
+            style={[styles.textInput]}
+            placeholder="LastName"
+            onChangeText={(inputText) => {
+              setErrorLastName(false);
+              setLastName(inputText);
+            }}
+          />
+          <View
+            style={[
+              styles.inputInderline,
+              {
+                backgroundColor: errorLastName ? colors.accent : colors.gray2,
+              },
+            ]}
+          ></View>
+        </View>
+        <View>
+          <Text
+            style={[
+              styles.authorizationText,
+              {
+                color: error ? colors.accent : colors.black,
+              },
+            ]}
+          >
+            Email
+          </Text>
+          <TextInput
+            style={[styles.textInput]}
+            placeholder="simpleEmail@mail.ru"
+            onChangeText={(inputText) => {
+              setEmail(inputText);
+              setError(false);
+            }}
+          />
+          <View
+            style={[
+              styles.inputInderline,
+              {
+                backgroundColor: error ? colors.accent : colors.gray2,
+              },
+            ]}
+          ></View>
+        </View>
+        <View>
+          <Text
+            style={[
+              styles.authorizationText,
+              {
+                color: error ? colors.accent : colors.black,
+              },
+            ]}
+          >
+            Password
+          </Text>
+          <View style={[styles.passwordInput]}>
+            <TextInput
+              style={[styles.textInput]}
+              value={
+                passwordVisible
+                  ? password
+                  : [...Array(password.length)].reduce((acc, next) => {
+                      return (acc += '*');
+                    }, '')
+              }
+              onChangeText={(inputText) => {
+                passwordVisible ? setPassword(inputText) : null;
+                setError(false);
+              }}
+              placeholder="yourCoolPassword"
+            />
+            <Entypo
+              name={passwordVisible ? 'eye' : 'eye-with-line'}
+              size={20}
+              color={colors.gray}
+              onPress={() => {
+                setPasswordVisible(!passwordVisible);
+              }}
+            />
+          </View>
+          <View
+            style={[
+              styles.inputInderline,
+              {
+                backgroundColor: error ? colors.accent : colors.gray2,
+              },
+            ]}
+          ></View>
+        </View>
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          return handleSignUp(email, password);
+        }}
+      >
+        <View style={[styles.buttonCenterMode]}>
+          <LinearGradient
+            start={{ x: 0, y: 15 }}
+            end={{ x: 1.33, y: 5 }}
+            colors={[colors.primary, colors.secondary, colors.tertiary]}
+            style={[styles.buttonLogin, styles.blockCentering]}
+          >
+            <Text style={styles.loginButtonText}>Sign Up</Text>
+          </LinearGradient>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <View style={[styles.blockCentering]}>
+          <Text style={[styles.forgotPasswordText]}>Technical support</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingHorizontal: width * 0.085,
+    paddingTop: height * 0.1,
+  },
+  blockCentering: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginText: {
+    marginTop: 35,
+    fontSize: 26,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  authorizationPlace: {
+    marginTop: 50,
+  },
+  authorizationText: {
+    color: colors.black,
+    fontSize: 15,
+    marginBottom: 10,
+    fontFamily: 'SFUIDisplay-Regular',
+  },
+  inputInderline: {
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.gray2,
+    marginBottom: 20,
+  },
+  textInput: {
+    color: colors.black,
+    marginBottom: 20,
+    fontFamily: 'SFUIDisplay-Medium',
+  },
+  buttonCenterMode: {
+    marginTop: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonLogin: {
+    width: '100%',
+    height: 48,
+    borderRadius: 9,
+  },
+  loginButtonText: {
+    color: colors.white,
+    fontFamily: 'SFUIDisplay-Regular',
+    fontSize: 16,
+  },
+  forgotPasswordText: {
+    color: colors.gray,
+    marginTop: 20,
+    textDecorationLine: 'underline',
+  },
+  passwordInput: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+});
+
+export default SignUpScreen;
+
+
+// END OF FILE: SignUpScreen.tsx
+
+
+======================================================================
+ARCHIVO 10: WelcomeScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// Lib
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import AppLoading from 'expo-app-loading';
+import { LinearGradient } from 'expo-linear-gradient';
+import MaskedView from '@react-native-masked-view/masked-view';
+import 'react-native-reanimated';
+import { MotiView } from 'moti';
+
+// Components
+import ModalTermsOfService from '../components/ModalTermsOfService';
+import { width, height, colors } from '../constants/theme';
+
+// UI
+import { ThemesContext } from '../context/ThemeContext';
+
+const WelcomeScreen = ({ navigation }) => {
+  const flatlistRef = useRef(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    flatlistRef.current?.scrollToIndex({
+      index: activeIndex,
+      animated: true,
+      viewOffset: 10,
+      viewPosition: 1,
+    });
+  }, [activeIndex]);
+
+  const { fontsLoaded } = useContext(ThemesContext);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  const sliderImages = [
+    { id: 0, image: require('./../assets/images/Plant.png') },
+    { id: 1, image: require('./../assets/images/Plant2.png') },
+    { id: 2, image: require('./../assets/images/Plant3.png') },
+  ];
+
+  return (
+    <View style={styles.container}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        <View>
+          <Text style={[styles.titleText]}>Your home. </Text>
+        </View>
+        <View>
+          <MaskedView maskElement={<Text style={[styles.titleGradientElement]}>Greener.</Text>}>
+            <LinearGradient
+              colors={[colors.primary, colors.secondary, colors.tertiary]}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0.33 }}
+              style={{ width: 120, height: 35 }}
+            />
+          </MaskedView>
+        </View>
+      </View>
+      <View style={styles.blockCentering}>
+        <Text style={[styles.textUnderTitle]}>Enjoy the experience</Text>
+      </View>
+      <View style={[styles.sliderContainer]}>
+        <View style={[styles.slider]}></View>
+        <FlatList
+          ref={flatlistRef}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={sliderImages}
+          decelerationRate="fast"
+          bounces={false}
+          onMomentumScrollEnd={(ev) => {
+            const newIndex = Math.round(ev.nativeEvent.contentOffset.x / width);
+            setActiveIndex(newIndex);
+          }}
+          keyExtractor={(item, index) => {
+            return item.id + index.toString();
+          }}
+          renderItem={({ item }) => {
+            return (
+              <MotiView>
+                <Image style={[styles.sliderImage]} source={item.image} />
+              </MotiView>
+            );
+          }}
+        />
+        <View style={[styles.paginationSlider, styles.blockCentering]}>
+          {sliderImages.map((_, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setActiveIndex(index);
+                }}
+              >
+                <MotiView
+                  style={[
+                    styles.paginationDot,
+                    {
+                      width: activeIndex === index ? 7 : 5,
+
+                      height: activeIndex === index ? 7 : 5,
+                      backgroundColor: activeIndex === index ? colors.gray : colors.gray2,
+                    },
+                  ]}
+                ></MotiView>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Login');
+        }}
+      >
+        <View style={[styles.buttonCenterMode]}>
+          <LinearGradient
+            start={{ x: 0, y: 15 }}
+            end={{ x: 1.33, y: 5 }}
+            colors={[colors.primary, colors.secondary, colors.tertiary]}
+            style={[styles.buttonLogin, styles.blockCentering]}
+          >
+            <Text style={styles.loginButtonText}>Login</Text>
+          </LinearGradient>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('SignUp');
+        }}
+      >
+        <View style={[styles.buttonSignUp, styles.blockCentering]}>
+          <Text>Sign up</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={toggleModal}>
+        <View style={[styles.blockCentering]}>
+          <Text style={[styles.serviceLinkText]}>Terms of service</Text>
+        </View>
+      </TouchableOpacity>
+      {ModalTermsOfService(isModalVisible, toggleModal)}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingTop: height * 0.1,
+  },
+  blockCentering: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  titleText: {
+    color: colors.black,
+    fontSize: 32,
+    fontFamily: 'SFUIDisplay-Bold',
+  },
+  titleGradientElement: {
+    fontSize: 32,
+    fontFamily: 'SFUIDisplay-Bold',
+  },
+  textUnderTitle: {
+    color: colors.gray2,
+    marginTop: 10,
+    fontSize: 18,
+  },
+  sliderContainer: {
+    marginTop: 35,
+  },
+  slider: {
+    position: 'absolute',
+    backgroundColor: 'rgba(197, 204, 214, 0.15)',
+    left: -width * 0.05,
+    width: width * 1.1,
+    height: width * 1.1,
+    borderRadius: width,
+  },
+  sliderImage: {
+    width: width,
+    height: height * 0.5,
+    resizeMode: 'cover',
+  },
+  paginationSlider: {
+    top: height * 0.43,
+    left: width * 0.45,
+    position: 'absolute',
+    flexDirection: 'row',
+  },
+  paginationDot: {
+    margin: 3,
+    width: 5,
+    height: 5,
+    borderRadius: 6,
+  },
+  buttonCenterMode: {
+    marginTop: 26,
+    paddingHorizontal: width * 0.15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonLogin: {
+    width: '100%',
+    height: 48,
+    borderRadius: 9,
+  },
+  loginButtonText: {
+    color: colors.white,
+    fontFamily: 'SFUIDisplay-Regular',
+    fontSize: 16,
+  },
+  buttonSignUp: {
+    fontFamily: 'SFUIDisplay-Regular',
+    fontSize: 16,
+    marginTop: 26,
+    marginHorizontal: width * 0.15,
+    backgroundColor: colors.white,
+    height: 48,
+    borderRadius: 9,
+    shadowColor: '#171717',
+    shadowOffset: { width: -1, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+  },
+  serviceLinkText: {
+    marginTop: 20,
+    color: colors.gray,
+    fontSize: 13,
+    fontFamily: 'SFUIDisplay-Regular',
+  },
+});
+
+export default WelcomeScreen;
+
+
+// END OF FILE: WelcomeScreen.tsx
+
+================
+screens ConnectedRot
+===============
+===============================================
+ARCHIVOS DE CÓDIGO CONCATENADOS
+Generado: 2025-07-15T23:50:23.244451
+Total de archivos: 5
+===============================================
+
+📋 ÍNDICE DE ARCHIVOS INCLUIDOS:
+--------------------------------------------------
+  1. ⚛️ HomeScreen.tsx
+  2. ⚛️ LoginScreen (copia).tsx
+  3. ⚛️ LoginScreen.tsx
+  4. ⚛️ PlantsListscreen.tsx
+  5. ⚛️ WelcomeScreen.tsx
+
+==================================================
+
+
+======================================================================
+ARCHIVO 1: HomeScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+
+import React from 'react';
+import { ScrollView, View } from 'react-native';
+import SearchBar from '../components/home/SearchBar';
+import Slider from '../components/home/Slider';
+import CategoryList from '../components/home/CategoryList';
+import ProductList from '../components/home/ProductList';
+
+const HomeScreen = () => {
+  return (
+    <ScrollView className="flex-1 bg-gray-100 px-4 pt-4">
+      <View className="flex-row justify-between items-center mb-4">
+        <SearchBar />
+      </View>
+      <Slider />
+      {/* <View className="bg-red-500 w-20 h-20" /> */}
+      <CategoryList />
+      <ProductList />
+    </ScrollView>
+  );
+};
+
+export default HomeScreen;
+
+
+// END OF FILE: HomeScreen.tsx
+
+
+======================================================================
+ARCHIVO 2: LoginScreen (copia).tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+// src/screens/LoginScreen.tsx
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+
+const LoginScreen = () => {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  return (
+    <KeyboardAvoidingView
+      className="flex-1 bg-white px-6 justify-center"
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      {/* Título */}
+      <View className="mb-6">
+        <Text className="text-3xl font-bold text-green-600 text-center">
+          Welcome back!
+        </Text>
+        <Text className="text-center text-gray-500 mt-2">
+          Login to continue
+        </Text>
+      </View>
+
+      {/* Email */}
+      <View className="mb-4">
+        <Text className="text-base text-gray-700 mb-1">Email</Text>
+        <TextInput
+          className="border border-gray-300 rounded-lg px-4 py-2"
+          placeholder="you@email.com"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
+
+      {/* Password */}
+      <View className="mb-2">
+        <Text className="text-base text-gray-700 mb-1">Password</Text>
+        <TextInput
+          className="border border-gray-300 rounded-lg px-4 py-2"
+          placeholder="••••••••"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
+
+      {/* Forgot password */}
+      <TouchableOpacity
+        className="mb-4"
+        onPress={() => navigation.navigate('ForgotPassword' as never)}
+      >
+        <Text className="text-right text-sm text-green-600 underline">
+          Forgot your password?
+        </Text>
+      </TouchableOpacity>
+
+      {/* Login Button */}
+      <TouchableOpacity
+        className="rounded-xl overflow-hidden"
+        onPress={() => navigation.navigate('Home' as never)}
+      >
+        <LinearGradient
+          colors={['#0AC4BA', '#2BDA8E', '#FFE358']}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          className="py-3 px-8 items-center"
+        >
+          <Text className="text-white text-base font-semibold">Login</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      {/* Register link */}
+      <TouchableOpacity
+        className="mt-6"
+        onPress={() => navigation.navigate('Register' as never)}
+      >
+        <Text className="text-center text-sm text-gray-600">
+          Don’t have an account?{' '}
+          <Text className="text-green-600 underline">Sign up</Text>
+        </Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
+  );
+};
+
+export default LoginScreen;
+
+
+// END OF FILE: LoginScreen (copia).tsx
+
+
+======================================================================
+ARCHIVO 3: LoginScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
+
+type RootStackParamList = {
+  Welcome: undefined;
+  Login: undefined;
+  Home: undefined;
+  ForgotPassword: undefined;
+};
+
+type Props = {
+  navigation: NavigationProp<RootStackParamList, 'Login'>;
+};
+
+const LoginScreen: React.FC<Props> = ({ navigation }) => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+
+      {/* Botón para ir a Home */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Home')}
+      >
+        <Text style={styles.buttonText}>Ir a Home</Text>
+      </TouchableOpacity>
+
+      {/* Botón para ir a ForgotPassword */}
+      <TouchableOpacity
+        style={styles.link}
+        onPress={() => navigation.navigate('ForgotPassword')}
+      >
+        <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 28,
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#60BF96',
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 18,
+  },
+  link: {
+    marginTop: 10,
+  },
+  linkText: {
+    color: '#999',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
+});
+
+export default LoginScreen;
+
+
+// END OF FILE: LoginScreen.tsx
+
+
+======================================================================
+ARCHIVO 4: PlantsListscreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+import React from 'react';
+import { View, Text, FlatList, Image, Dimensions } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+const plantsData = [
+  {
+    id: '1',
+    name: 'Ficus Audrey',
+    species: 'Ficus benghalensis',
+    image: require('../assets/icons/ficus-audrey-burbank-almond_arrowhead-white-butterfly-hyde-stone_gallery_all_all_01.webp'),
+    temp: '18-25°C',
+    humidity: '60%',
+    moisture: 'Medium',
+  },
+  {
+    id: '2',
+    name: 'Snake Plant',
+    species: 'Sansevieria trifasciata',
+    image: require('../assets/icons/snake-plant-laurentii-tree_gallery_small_all_all_01.webp'),
+    temp: '15-27°C',
+    humidity: 'Low',
+    moisture: 'Low',
+  },
+  // Más plantas aquí
+];
+
+const StatItem = ({ iconName, label }: { iconName: string; label: string }) => (
+  <View className="flex-row items-center mr-4">
+    <Ionicons name="leaf-outline" size={24} color="green" />
+    <Text className="text-xs text-gray-600 ml-1">{label}</Text>
+  </View>
+);
+
+const PlantsListScreen = () => {
+  return (
+    <View className="flex-1 bg-gray-50 p-4">
+      <Text className="text-2xl font-extrabold text-green-700 mb-6 text-center">
+        Plantas Supervisadas
+      </Text>
+
+      <FlatList
+        data={plantsData}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        renderItem={({ item }) => (
+          <View className="flex-row bg-white rounded-xl p-4 mb-5 shadow-md">
+            <Image
+              source={item.image}
+              style={{ width: 70, height: 70, borderRadius: 35 }}
+              resizeMode="cover"
+            />
+            <View className="flex-1 ml-4 justify-center">
+              <Text className="text-lg font-semibold text-green-800">{item.name}</Text>
+              <Text className="text-sm text-gray-600 mb-2 italic">{item.species}</Text>
+              <View className="flex-row">
+                <StatItem iconName="thermometer-outline" label={item.temp} />
+                <StatItem iconName="water-outline" label={`${item.humidity} Humedad`} />
+                <StatItem iconName="leaf-outline" label={`Suelo: ${item.moisture}`} />
+              </View>
+            </View>
+          </View>
+        )}
+      />
+    </View>
+  );
+};
+
+export default PlantsListScreen;
+
+
+// END OF FILE: PlantsListscreen.tsx
+
+
+======================================================================
+ARCHIVO 5: WelcomeScreen.tsx
+CARPETA: 
+EXTENSIÓN: .tsx
+======================================================================
+
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+
+const slides = [
+  { id: '1', image: require('../assets/images/Plant.png') },
+  { id: '2', image: require('../assets/images/Plant2.png') },
+  { id: '3', image: require('../assets/images/Plant3.png') },
+];
+
+const WelcomeScreen = () => {
+  const navigation = useNavigation();
+
+  return (
+    <View className="flex-1 bg-white pt-20">
+      {/* Header con título */}
+      <View className="flex-row justify-center items-center mb-2">
+        <Text className="text-3xl font-bold text-green-600">
+          ConnectedRoot.
+        </Text>
+      </View>
+
+      <Text className="text-gray-400 text-lg text-center mb-4">Enjoy the experience</Text>
+
+      {/* Carrusel de imágenes */}
+      <FlatList
+        data={slides}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <Image source={item.image} className="w-screen h-[400px] resize-contain" />
+        )}
+      />
+
+      {/* Botón Login */}
+      <TouchableOpacity
+        className="mx-12 mt-6"
+        onPress={() => navigation.navigate('Login' as never)}
+      >
+        <LinearGradient
+          colors={['#0AC4BA', '#2BDA8E', '#FFE358']}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          className="rounded-xl py-3 px-8 items-center"
+        >
+          <Text className="text-white text-base font-medium">Login</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      {/* Botón Sign up */}
+      <TouchableOpacity
+        className="mx-12 mt-4 bg-white rounded-xl py-3 px-8 items-center shadow"
+        onPress={() => navigation.navigate('SignUp' as never)}
+      >
+        <Text className="text-base text-gray-800 font-medium">Sign up</Text>
+      </TouchableOpacity>
+
+      {/* Link a términos */}
+      <TouchableOpacity className="mt-4 items-center">
+        <Text className="text-xs text-gray-400 underline">Terms of service</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default WelcomeScreen;
+
+
+// END OF FILE: WelcomeScreen.tsx
